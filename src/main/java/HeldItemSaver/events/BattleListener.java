@@ -8,7 +8,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.battles.BattleEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleFledEvent;
-import com.cobblemon.mod.common.api.events.battles.BattleStartedPostEvent;
+import com.cobblemon.mod.common.api.events.battles.BattleStartedEvent;
 import com.cobblemon.mod.common.api.events.battles.BattleVictoryEvent;
 import com.cobblemon.mod.common.api.storage.NoPokemonStoreException;
 import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
@@ -29,7 +29,7 @@ import java.util.stream.StreamSupport;
 public class BattleListener {
     private final HeldItemManager heldItemManager = new HeldItemManager();
     // Set to keep track of processed battles to avoid re-processing
-    private Set<UUID> processedBattles = ConcurrentHashMap.newKeySet();
+    private final Set<UUID> processedBattles = ConcurrentHashMap.newKeySet();
 
     /**
      * Constructor for BattleListener.
@@ -58,7 +58,7 @@ public class BattleListener {
      * @param event The BattleStartedPostEvent object containing information about the started battle.
      * @return Unit.INSTANCE as required by Kotlin interfaces.
      */
-    private Unit handleBattleStartedPostEvent(BattleStartedPostEvent event) {
+    private Unit handleBattleStartedPostEvent(BattleStartedEvent.Post event) {
         try {
             onBattleStartedPost(event);
         } catch (NoPokemonStoreException e) {
@@ -115,7 +115,7 @@ public class BattleListener {
      * @param event The BattleStartedPostEvent object containing information about the started battle.
      * @throws NoPokemonStoreException If the player's Pokémon store cannot be accessed.
      */
-    private void onBattleStartedPost(BattleStartedPostEvent event) throws NoPokemonStoreException {
+    private void onBattleStartedPost(BattleStartedEvent.Post event) throws NoPokemonStoreException {
         ModLogger.info("Processing start of a battle");
 
         // Retrieves the list of players involved in the battle
@@ -159,6 +159,7 @@ public class BattleListener {
         }
     }
 
+    @SuppressWarnings("ConstantValue")
     private void restorePlayerHeldItems(ServerPlayerEntity player, UUID playerUUID) {
         if (player == null) {
             ModLogger.error("Player (UUID: {}) unavailable to restore items.", playerUUID);
@@ -182,6 +183,7 @@ public class BattleListener {
         logFinalItemStates(partyStore, playerUUID);
     }
 
+    @SuppressWarnings("ConstantValue")
     private void logFinalItemStates(PlayerPartyStore partyStore, UUID playerUUID) {
         for (int i = 0; i < partyStore.size(); i++) {
             Pokemon pokemon = partyStore.get(i);

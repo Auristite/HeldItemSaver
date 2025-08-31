@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HeldItemManager {
 
     // Unified map for storing held items before battle for both players' and wild Pokémon's UUIDs
-    private Map<UUID, ItemStack[]> heldItemsBeforeBattle = new ConcurrentHashMap<>();
+    private final Map<UUID, ItemStack[]> heldItemsBeforeBattle = new ConcurrentHashMap<>();
 
     /**
      * Stores the held items of Pokémon before a battle begins.
@@ -50,7 +50,7 @@ public class HeldItemManager {
 
             ItemStack currentHeldItem = pokemon.heldItem();
             if (!ItemStack.areItemsEqual(heldItemsBefore[i], currentHeldItem)) {
-                pokemon.swapHeldItem(heldItemsBefore[i], false);
+                pokemon.swapHeldItem(heldItemsBefore[i], false, false);
                 ModLogger.debug("Restored held item for UUID {}", uuid);
             }
         }

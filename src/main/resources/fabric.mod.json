@@ -19,15 +19,12 @@
 			"HeldItemSaver.HeldItemSaver"
 		]
 	},
-	"mixins": [
-      "helditemsaver.mixins.json"
-	],
 	"depends": {
 		"java": ">=21",
 		"minecraft": ">=1.21.1",
-		"fabric-api": "*",
-		"fabricloader": ">=0.14.21",
-		"fabric-language-kotlin": "*"
-	},
-	"suggests": {}
+		"fabric-api": "~0.116.4",
+		"fabricloader": ">=0.16.14",
+		"fabric-language-kotlin": "*",
+		"cobblemon": "~1.7.0"
+	}
 }

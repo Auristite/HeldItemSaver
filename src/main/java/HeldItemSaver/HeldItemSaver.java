@@ -1,17 +1,18 @@
 package HeldItemSaver;
 
-import HeldItemSaver.configs.ModConfig;
-import HeldItemSaver.events.*;
 import HeldItemSaver.configs.ConfigHandler;
+import HeldItemSaver.configs.ModConfig;
 import HeldItemSaver.configs.ModLogger;
+import HeldItemSaver.events.BattleListener;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.minecraft.server.command.CommandManager;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 public class HeldItemSaver implements ModInitializer {
 
@@ -58,17 +59,19 @@ public class HeldItemSaver implements ModInitializer {
      * Will add actual permission for this if needed, but for now it's restricted to OPs/Console
      */
     private void registerCommands() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-            dispatcher.register(CommandManager.literal("helditemsaver")
-                    .then(CommandManager.literal("reload")
-                            .requires(source -> source.hasPermissionLevel(2))
-                            .executes(context -> {
-                                ModLogger.reloadConfig();
-                                context.getSource().sendMessage(Text.literal("HeldItemSaver configuration reloaded."));
-                                return 1;
-                            })
-                    )
-            );
-        });
+        CommandRegistrationCallback.EVENT.register((dispatcher,
+                                                    registryAccess,
+                                                    environment) ->
+                dispatcher.register(CommandManager.literal("helditemsaver")
+                        .then(CommandManager.literal("reload")
+                                .requires(src -> src.hasPermissionLevel(2))
+                                .executes(ctx -> {
+                                    ModLogger.reloadConfig();
+                                    ctx.getSource().sendMessage(Text.literal("HeldItemSaver configuration reloaded.")
+                                            .formatted(Formatting.GREEN));
+                                    return 1;
+                                })
+                        )
+                ));
     }
 }
